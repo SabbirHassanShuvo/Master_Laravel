@@ -14,7 +14,8 @@
     /* Shared Containers */
     .login-container,
     .forgot-container,
-    .reset-container {
+    .reset-container,
+    .otp-container {
         background: white;
         border-radius: 15px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -26,14 +27,15 @@
 
     .login-container:hover,
     .forgot-container:hover,
-    .reset-container:hover {
+    .reset-container:hover,
+    .otp-container:hover {
         transform: translateY(-5px);
     }
 
     /* Logo Section */
     .logo {
         text-align: center;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
     }
 
     .logo h1 {
@@ -78,10 +80,35 @@
         box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
     }
 
+    /* OTP Input Styles */
+    .otp-input-container {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 30px;
+    }
+
+    .otp-input {
+        width: 50px;
+        height: 60px;
+        font-size: 24px;
+        text-align: center;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        outline: none;
+        transition: all 0.3s ease;
+    }
+
+    .otp-input:focus {
+        border-color: #27ae60;
+        box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+    }
+
     /* Buttons */
     .btn-login,
     .btn-reset,
-    .btn-update {
+    .btn-update,
+    .btn-verify {
         background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
         border: none;
         border-radius: 10px;
@@ -95,24 +122,31 @@
 
     .btn-login:hover,
     .btn-reset:hover,
-    .btn-update:hover {
+    .btn-update:hover,
+    .btn-verify:hover {
         background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
     }
 
+    .btn-verify {
+        margin-bottom: 20px;
+    }
+
     /* Links */
     .forgot-password,
     .back-to-login,
-    .signup-link {
+    .signup-link,
+    .resend-otp {
         text-align: center;
-        margin-top: 20px;
+        margin-top: 15px;
         color: #7f8c8d;
     }
 
     .forgot-password a,
     .back-to-login a,
-    .signup-link a {
+    .signup-link a,
+    .resend-otp a {
         color: #27ae60;
         text-decoration: none;
         font-weight: 600;
@@ -121,7 +155,8 @@
 
     .forgot-password a:hover,
     .back-to-login a:hover,
-    .signup-link a:hover {
+    .signup-link a:hover,
+    .resend-otp a:hover {
         color: #2ecc71;
         text-decoration: underline;
     }
@@ -179,12 +214,19 @@
 
         .login-container,
         .forgot-container,
-        .reset-container {
+        .reset-container,
+        .otp-container {
             padding: 30px 20px;
         }
 
         .logo h1 {
             font-size: 2rem;
+        }
+
+        .otp-input {
+            width: 45px;
+            height: 55px;
+            font-size: 20px;
         }
     }
 </style>

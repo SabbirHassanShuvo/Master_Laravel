@@ -13,10 +13,13 @@
             </div>
         </div>
         <div class="logo-icon-wrapper">
-            <a href="index-2.html">
-                <img class="img-fluid main-logo main-white" src="assets/images/logo/logo.png" alt="logo">
-                <img class="img-fluid main-logo main-dark" src="assets/images/logo/logo-white.png" alt="logo">
+            <a href="{{ url('index-2.html') }}">
+                <img class="img-fluid main-logo main-white" src="{{ asset('assets/images/logo/logo.png') }}"
+                    alt="logo">
+                <img class="img-fluid main-logo main-dark" src="{{ asset('assets/images/logo/logo-white.png') }}"
+                    alt="logo">
             </a>
+
         </div>
         <nav class="sidebar-main">
             <div class="left-arrow" id="left-arrow">
@@ -45,7 +48,7 @@
                             </li>
 
                             <li>
-                                <a href="add-new-product.html">Add New Products</a>
+                                <a href="{{ route('addProductshow') }}">Add New Products</a>
                             </li>
                         </ul>
                     </li>

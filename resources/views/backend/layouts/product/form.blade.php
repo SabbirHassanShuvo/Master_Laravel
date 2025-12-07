@@ -407,7 +407,7 @@
                         </div>
 
                         <div class="seo-view">
-                            <span class="link">https://fastkart.com</span>
+                            {{-- <span class="link">https://fastkart.com</span> --}}
                             <h5>Buy fresh vegetables & Fruits online at best price</h5>
                             <p>Online Vegetable Store - Buy fresh vegetables & Fruits online at best
                                 prices. Order online and get free delivery.</p>

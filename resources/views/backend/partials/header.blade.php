@@ -116,7 +116,13 @@
                             </a>
                         </li>
                         <li>
-                            <a data-bs-toggle="modal" data-bs-target="#staticBackdrop" href="javascript:void(0)">
+                            <!-- Hidden logout form -->
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+
+                            <!-- Logout link triggers modal -->
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
                                 <i data-feather="log-out"></i>
                                 <span>Log out</span>
                             </a>
@@ -127,3 +133,26 @@
         </div>
     </div>
 </div>
+<!-- Modal Start -->
+<div class="modal fade" id="logoutModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <h5 class="modal-title mb-3" id="logoutModalLabel">Logging Out</h5>
+                <p>Are you sure you want to log out?</p>
+                <div class="button-box mt-3">
+                    <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-primary" id="confirm-logout">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script -->
+<script>
+    document.getElementById('confirm-logout').addEventListener('click', function() {
+        document.getElementById('logout-form').submit();
+    });
+</script>

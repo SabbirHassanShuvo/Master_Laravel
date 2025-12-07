@@ -21,20 +21,24 @@
             Enter your new password below to update your account.
         </p>
 
-        <form>
+        <form method="POST" action="{{ route('reset-password.post') }}">
+            @csrf
+
             <div class="mb-3">
                 <label for="password" class="form-label">New Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Enter new password" required>
+                <input type="password" name="password" class="form-control" id="password"
+                    placeholder="Enter new password" required>
             </div>
 
             <div class="mb-3">
                 <label for="password_confirmation" class="form-label">Confirm New Password</label>
-                <input type="password" class="form-control" id="password_confirmation"
+                <input type="password" name="password_confirmation" class="form-control" id="password_confirmation"
                     placeholder="Confirm new password" required>
             </div>
 
             <button type="submit" class="btn btn-update mt-3">Update Password</button>
         </form>
+
 
         <div class="back-to-login">
             <a href="#">← Back to Login</a>
