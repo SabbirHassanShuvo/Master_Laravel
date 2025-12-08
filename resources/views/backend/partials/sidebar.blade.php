@@ -44,27 +44,11 @@
                         </a>
                         <ul class="sidebar-submenu">
                             <li>
-                                <a href="products.html">Prodcts</a>
+                                <a href="{{ route('productList') }}">Prodcts</a>
                             </li>
 
                             <li>
                                 <a href="{{ route('addProductshow') }}">Add New Products</a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li class="sidebar-list">
-                        <a class="linear-icon-link sidebar-link sidebar-title" href="javascript:void(0)">
-                            <i class="ri-list-check-2"></i>
-                            <span>Category</span>
-                        </a>
-                        <ul class="sidebar-submenu">
-                            <li>
-                                <a href="category.html">Category List</a>
-                            </li>
-
-                            <li>
-                                <a href="add-new-category.html">Add New Category</a>
                             </li>
                         </ul>
                     </li>
@@ -76,10 +60,10 @@
                         </a>
                         <ul class="sidebar-submenu">
                             <li>
-                                <a href="all-users.html">All users</a>
+                                <a href="{{ route('userList') }}">All users</a>
                             </li>
                             <li>
-                                <a href="add-new-user.html">Add new user</a>
+                                <a href="{{ route('createUser') }}">Add new user</a>
                             </li>
                         </ul>
                     </li>

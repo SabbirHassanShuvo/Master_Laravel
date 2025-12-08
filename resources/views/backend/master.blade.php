@@ -80,6 +80,7 @@
 
     {{-- Script --}}
     @include('backend.partials.script')
+    @stack('scripts')
 
 </body>
 

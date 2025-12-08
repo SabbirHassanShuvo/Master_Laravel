@@ -4,8 +4,9 @@ use App\Http\Controllers\Web\Backend\Auth\AuthController;
 use App\Http\Controllers\Web\Backend\Auth\PasswordResetController;
 use Illuminate\Support\Facades\Route;
 // Public routes
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::get('/', [AuthController::class, 'showLoginForm'])->name('login.form');
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+
 Route::get('/forgot-password-link', [PasswordResetController::class, 'showForgotPasswordLinkForm'])->name('forgot-password-link');
 Route::post('/forgot-password-link', [PasswordResetController::class, 'sendForgotPasswordLink']);
 

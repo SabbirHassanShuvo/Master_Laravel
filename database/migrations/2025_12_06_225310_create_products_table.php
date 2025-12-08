@@ -11,23 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+       Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('type');
+            $table->enum('type', ['Simple', 'Classified']);
             $table->string('category');
-            $table->string('subcategory')->nullable();
-            $table->string('brand')->nullable();
-            $table->string('unit')->nullable();
+            $table->string('brand');
+            $table->string('unit');
             $table->string('tags')->nullable();
             $table->boolean('exchangeable')->default(false);
             $table->boolean('refundable')->default(true);
-            $table->text('description')->nullable();
-            $table->decimal('price', 10, 2);
-            $table->decimal('compare_price', 10, 2)->nullable();
-            $table->decimal('cost_per_item', 10, 2)->nullable();
-            $table->string('sku')->nullable();
-            $table->string('stock_status')->default('In Stock');
             $table->timestamps();
         });
     }

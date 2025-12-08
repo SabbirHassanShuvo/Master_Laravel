@@ -22,17 +22,38 @@
 
                         <div class="tab-content" id="pills-tabContent">
                             <div class="tab-pane fade show active" id="pills-home" role="tabpanel">
-                                <form class="theme-form theme-form-2 mega-form">
+                                <form class="theme-form theme-form-2 mega-form" action="{{ route('storeUser') }}"
+                                    method="POST" enctype="multipart/form-data">
+                                    @csrf
+
                                     <div class="card-header-1">
-                                        <h5>Product Information</h5>
+                                        <h5>User Information</h5>
                                     </div>
+
+                                    {{-- Success message --}}
+                                    @if (session('success'))
+                                        <div class="alert alert-success">
+                                            {{ session('success') }}
+                                        </div>
+                                    @endif
+
+                                    {{-- Validation errors --}}
+                                    @if ($errors->any())
+                                        <div class="alert alert-danger">
+                                            <ul class="mb-0">
+                                                @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
 
                                     <div class="row">
                                         <div class="mb-4 row align-items-center">
-                                            <label class="form-label-title col-lg-2 col-md-3 mb-0">First
-                                                Name</label>
+                                            <label class="form-label-title col-lg-2 col-md-3 mb-0">First Name</label>
                                             <div class="col-md-9 col-lg-10">
-                                                <input class="form-control" type="text">
+                                                <input class="form-control" type="text" name="name"
+                                                    value="{{ old('name') }}">
                                             </div>
                                         </div>
 
@@ -40,7 +61,8 @@
                                             <label class="col-lg-2 col-md-3 col-form-label form-label-title">Email
                                                 Address</label>
                                             <div class="col-md-9 col-lg-10">
-                                                <input class="form-control" type="email">
+                                                <input class="form-control" type="email" name="email"
+                                                    value="{{ old('email') }}" required>
                                             </div>
                                         </div>
 
@@ -48,7 +70,7 @@
                                             <label
                                                 class="col-lg-2 col-md-3 col-form-label form-label-title">Password</label>
                                             <div class="col-md-9 col-lg-10">
-                                                <input class="form-control" type="password">
+                                                <input class="form-control" type="password" name="password" required>
                                             </div>
                                         </div>
 
@@ -56,11 +78,40 @@
                                             <label class="col-lg-2 col-md-3 col-form-label form-label-title">Confirm
                                                 Password</label>
                                             <div class="col-md-9 col-lg-10">
-                                                <input class="form-control" type="password">
+                                                <input class="form-control" type="password" name="password_confirmation"
+                                                    required>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4 row align-items-center mt-4">
+                                            <label class="col-lg-2 col-md-3 col-form-label form-label-title">Phone</label>
+                                            <div class="col-md-9 col-lg-10">
+                                                <input class="form-control" type="text" name="phone"
+                                                    value="{{ old('phone') }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4 row align-items-center">
+                                            <label class="col-lg-2 col-md-3 col-form-label form-label-title">Photo</label>
+                                            <div class="col-md-9 col-lg-10">
+                                                <input class="form-control" type="file" name="photo" id="photoInput">
+                                                <div class="mt-3" id="photoPreview"
+                                                    style="display: none; opacity: 0; transition: opacity 0.3s ease;">
+                                                    <img src="" alt="Photo Preview"
+                                                        class="img-thumbnail rounded shadow-sm"
+                                                        style="max-width: 150px; max-height: 150px; object-fit: cover; border: 1px solid #e9ecef;">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-9 offset-md-2">
+                                                <button type="submit" class="btn btn-primary">Create User</button>
                                             </div>
                                         </div>
                                     </div>
                                 </form>
+
                             </div>
 
                             <div class="tab-pane fade" id="pills-profile" role="tabpanel">
