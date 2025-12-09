@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login.form');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
-Route::get('/forgot-password-link', [PasswordResetController::class, 'showForgotPasswordLinkForm'])->name('forgot-password-link');
+Route::get('/forgot-password-link', [PasswordResetController::class, 'showForgotPasswordLinkForm'])
+    ->name('forgot-password-link');
 Route::post('/forgot-password-link', [PasswordResetController::class, 'sendForgotPasswordLink']);
 
 Route::get('/verify-otp', [PasswordResetController::class, 'showVerifyOtpForm'])->name('verify-otp');
@@ -16,11 +17,10 @@ Route::post('/verify-otp', [PasswordResetController::class, 'verifyOtp'])->name(
 Route::get('/reset-password', [PasswordResetController::class, 'showResetPasswordForm'])->name('reset-password');
 Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])->name('reset-password.post');
 
-
-// Protected routes with JWT middleware
+// Protected routes (Web auth)
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
-        return view('backend.index'); // Dashboard blade
+        return view('backend.index');
     })->name('dashboard');
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

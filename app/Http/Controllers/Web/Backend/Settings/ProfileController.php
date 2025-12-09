@@ -12,11 +12,10 @@ class ProfileController extends Controller
       public function edit()
     {
         $user = auth()->user();
-        // dd($user);
         return view('backend.layouts.settings.profilesetting', compact('user'));
     }
 
-    public function update(Request $request)
+   public function update(Request $request)
     {
         $user = auth()->user();
 
@@ -28,17 +27,24 @@ class ProfileController extends Controller
             'password' => 'nullable|string|min:6|confirmed',
         ]);
 
+        // Update basic info
         $user->name = $validated['name'] ?? $user->name;
         $user->email = $validated['email'];
         $user->phone = $validated['phone'] ?? $user->phone;
 
+        // Update Photo
         if ($request->hasFile('photo')) {
+
+            // Delete old image
             if ($user->photo && file_exists(public_path('uploads/users/' . $user->photo))) {
                 unlink(public_path('uploads/users/' . $user->photo));
             }
+
+            // Upload new
             $user->photo = Helper::handlePhoto($request, 'photo', 'uploads/users');
         }
 
+        // Update Password
         if (!empty($validated['password'])) {
             $user->password = bcrypt($validated['password']);
         }
@@ -47,5 +53,6 @@ class ProfileController extends Controller
 
         return redirect()->route('settings.profile.edit')->with('success', 'Profile updated successfully!');
     }
+
 
 }

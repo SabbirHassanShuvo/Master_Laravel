@@ -31,12 +31,11 @@
                     <li class="back-btn"></li>
 
                     <li class="sidebar-list">
-                        <a class="sidebar-link sidebar-title link-nav" href="index-2.html">
+                        <a class="sidebar-link sidebar-title link-nav" href="{{ route('dashboard') }}">
                             <i class="ri-home-line"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
-
                     <li class="sidebar-list">
                         <a class="linear-icon-link sidebar-link sidebar-title" href="javascript:void(0)">
                             <i class="ri-store-3-line"></i>
@@ -82,12 +81,19 @@
                             </li>
                         </ul>
                     </li>
-
                     <li class="sidebar-list">
-                        <a class="sidebar-link sidebar-title link-nav" href="media.html">
-                            <i class="ri-price-tag-3-line"></i>
-                            <span>Media</span>
+                        <a class="sidebar-link sidebar-title" href="javascript:void(0)">
+                            <i class="fa fa-question-circle" aria-hidden="true"></i>
+                            <span>Fqa</span>
                         </a>
+                        <ul class="sidebar-submenu">
+                            <li>
+                                <a href="{{ route('fqaList') }}">All Fqas</a>
+                            </li>
+                            <li>
+                                <a href="create-fqa.html">Create Fqa</a>
+                            </li>
+                        </ul>
                     </li>
 
                     <li class="sidebar-list">
@@ -97,10 +103,14 @@
                         </a>
                         <ul class="sidebar-submenu">
                             <li>
-                                <a href="profile-setting.html">Profile Setting</a>
+                                <a href="{{ route('settings.profile.edit') }}">Profile Setting</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('settings.mail.edit') }}">Mail Setting</a>
                             </li>
                         </ul>
                     </li>
+
                 </ul>
             </div>
 

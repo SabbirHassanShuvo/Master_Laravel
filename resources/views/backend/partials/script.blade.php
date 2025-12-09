@@ -87,8 +87,9 @@
 
 <script>
     document.getElementById('photoInput').addEventListener('change', function(event) {
-        const preview = document.getElementById('photoPreview').querySelector('img');
-        const file = event.target.files[0];
+        let file = event.target.files[0];
+        let preview = document.querySelector('#photoPreview img');
+
         if (file) {
             preview.src = URL.createObjectURL(file);
         }

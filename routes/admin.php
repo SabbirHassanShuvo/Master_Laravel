@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Web\Backend\FqaController;
 use App\Http\Controllers\Web\Backend\UserController;
 use App\Http\Controllers\Web\Backend\ProductController;
 
@@ -22,4 +23,17 @@ Route::prefix('admin')->group(function () {
 
     Route::get('/createUser',[UserController::class,'createUser'])->name('createUser');
     Route::post('/storeUser',[UserController::class,'storeUser'])->name('storeUser');
+
+    // fqa routes
+    Route::get('/fqa/show', [FqaController::class, 'show'])->name('fqa.show');
+    Route::post('/fqa/store', [FqaController::class, 'store'])->name('fqa.store');
+    
+    Route::get('/fqaList', [FqaController::class, 'fqaList'])->name('fqaList');
+    Route::get('/getFqa', [FqaController::class, 'getFqa'])->name('getFqa.data');
+
+    Route::get('/fqa/{id}', [FqaController::class, 'edit'])->name('fqa.edit');
+
+    Route::post('/fqa/{id}', [FqaController::class, 'update'])->name('fqa.update');
+    Route::delete('/fqa/{id}', [FqaController::class, 'destroy'])->name('fqa.destroy');
+
 });

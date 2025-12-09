@@ -37,30 +37,19 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        // Validation
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'product_type' => 'required|in:Simple,Classified',
-            'category' => 'required|string|max:255',
-            'brand' => 'required|string|max:255',
-            'unit' => 'required|string|max:50',
-            'tags' => 'nullable|string|max:255',
-            'exchangeable' => 'sometimes|boolean',
-            'refundable' => 'sometimes|boolean',
+            'question' => 'required|string|max:255',
+            'answer' => 'required|string',
+            'status' => 'required|in:active,inactive',
         ]);
 
-        // Data insert
-        $product = new Product();
-        $product->name = $validated['name'];
-        $product->type = $validated['product_type'];
-        $product->category = $validated['category'];
-        $product->brand = $validated['brand'];
-        $product->unit = $validated['unit'];
-        $product->tags = $validated['tags'] ?? null;
-        $product->exchangeable = $request->has('exchangeable') ? $validated['exchangeable'] : false;
-        $product->refundable = $request->has('refundable') ? $validated['refundable'] : true;
-        $product->save();
+        $fqa = new Fqa();
+        $fqa->question = $validated['question'];
+        $fqa->answer = $validated['answer'];
+        $fqa->status = $validated['status'];
+        $fqa->save();
 
-        return redirect()->back()->with('success', 'Product added successfully!');
+        return redirect()->route('fqaList')->with('success', 'FAQ added successfully!');
     }
+
 }
