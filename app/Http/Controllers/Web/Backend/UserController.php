@@ -24,8 +24,8 @@ class UserController extends Controller
             ->addColumn('action', function($row){
                 $editUrl = route('user.edit', $row->id);
                 $deleteUrl = route('user.delete', $row->id);
-                return '<a href="'.$editUrl.'" class="btn btn-sm btn-primary">Edit</a> 
-                        <button data-url="'.$deleteUrl.'" class="btn btn-sm btn-danger btn-delete">Delete</button>';
+                return '<a href="'.$editUrl.'" class="btn btn-sm btn-primary" style="width:70px;">Edit</a> 
+                        <button data-url="'.$deleteUrl.'" class="btn btn-sm btn-danger btn-delete" style="width:70px;">Delete</button>';
             })
             ->rawColumns(['action'])
             ->make(true);
@@ -102,17 +102,17 @@ class UserController extends Controller
 
 
     public function delete($id)
-{
-    $user = User::findOrFail($id);
+    {
+        $user = User::findOrFail($id);
 
-    // Delete user photo from storage if exists
-    if ($user->photo && file_exists(public_path($user->photo))) {
-        unlink(public_path($user->photo));
+        // Delete user photo from storage if exists
+        if ($user->photo && file_exists(public_path($user->photo))) {
+            unlink(public_path($user->photo));
+        }
+
+        $user->delete();
+
+        return response()->json(['success' => 'User deleted successfully']);
     }
-
-    $user->delete();
-
-    return response()->json(['success' => 'User deleted successfully']);
-}
 
 }

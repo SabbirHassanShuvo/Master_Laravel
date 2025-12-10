@@ -16,7 +16,7 @@ class Fqa extends Model
     ];
 
     protected $casts = [
-    'status' => 'boolean',
+    // 'status' => 'boolean',
     ];
 
 

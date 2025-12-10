@@ -27,8 +27,14 @@ class FqaController extends Controller
             ->addColumn('action', function($row){
                 $editUrl = route('fqa.edit', $row->id);
                 $deleteUrl = route('fqa.destroy', $row->id);
-                return '<a href="'.$editUrl.'" class="btn btn-sm btn-primary">Edit</a> 
-                        <button type="button" data-url="'.$deleteUrl.'" class="btn btn-sm btn-danger btn-delete">Delete</button>';
+                return '
+                <a href="'.$editUrl.'" class="btn btn-primary btn-sm text-white" style="width:70px;">
+                    Edit
+                </a>
+                <button type="button" data-url="'.$deleteUrl.'" class="btn btn-danger btn-sm btn-delete" style="width:70px;">
+                    Delete
+                </button>';
+
             })
             ->rawColumns(['status', 'action'])
             ->make(true);

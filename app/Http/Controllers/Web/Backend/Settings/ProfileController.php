@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Web\Backend\Settings;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\User;
 use App\Helpers\Helper;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
@@ -52,6 +54,27 @@ class ProfileController extends Controller
         $user->save();
 
         return redirect()->route('settings.profile.edit')->with('success', 'Profile updated successfully!');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password'          => 'required',
+            'new_password'              => 'required|string|min:6|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        // Current password check
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Current password does not match.']);
+        }
+
+        // Update password
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return back()->with('success', 'Password updated successfully.');
     }
 
 

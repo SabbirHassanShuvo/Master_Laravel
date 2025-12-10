@@ -91,7 +91,7 @@
                                 <a href="{{ route('fqaList') }}">All Fqas</a>
                             </li>
                             <li>
-                                <a href="create-fqa.html">Create Fqa</a>
+                                <a href="{{ route('fqa.show') }}">Create Fqa</a>
                             </li>
                         </ul>
                     </li>
@@ -107,6 +107,12 @@
                             </li>
                             <li>
                                 <a href="{{ route('settings.mail.edit') }}">Mail Setting</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('web-setting.edit') }}">Web Setting</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('app-setting.edit') }}">App Setting</a>
                             </li>
                         </ul>
                     </li>

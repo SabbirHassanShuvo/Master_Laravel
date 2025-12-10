@@ -65,26 +65,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-
-                                    <!-- Password -->
-                                    <div class="mb-4 row align-items-center">
-                                        <label class="form-label-title col-sm-2 mb-0">Password</label>
-                                        <div class="col-sm-10">
-                                            <input class="form-control" type="password" name="password"
-                                                placeholder="Enter New Password" />
-                                        </div>
-                                    </div>
-
-                                    <!-- Confirm Password -->
-                                    <div class="mb-4 row align-items-center">
-                                        <label class="form-label-title col-sm-2 mb-0">Confirm Password</label>
-                                        <div class="col-sm-10">
-                                            <input class="form-control" type="password" name="password_confirmation"
-                                                placeholder="Confirm Password" />
-                                        </div>
-                                    </div>
-
                                     <div class="col-sm-12 text-end">
                                         <button type="submit" class="btn btn-primary">
                                             Update Profile
@@ -93,6 +73,49 @@
                                 </div>
                             </form>
                         </div>
+                        <form action="{{ route('settings.password.update') }}" method="POST"
+                            class="theme-form theme-form-2 mega-form mt-5">
+                            @csrf
+                            <div class="row">
+
+                                <!-- Current Password -->
+                                <div class="mb-4 row align-items-center">
+                                    <label class="form-label-title col-sm-2 mb-0">Current Password</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="password" name="current_password"
+                                            placeholder="Enter Current Password" required />
+                                        @error('current_password')
+                                            <div class="text-danger mt-1">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <!-- New Password -->
+                                <div class="mb-4 row align-items-center">
+                                    <label class="form-label-title col-sm-2 mb-0">New Password</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="password" name="new_password"
+                                            placeholder="Enter New Password" required />
+                                        @error('new_password')
+                                            <div class="text-danger mt-1">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <!-- Confirm Password -->
+                                <div class="mb-4 row align-items-center">
+                                    <label class="form-label-title col-sm-2 mb-0">Confirm Password</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="password" name="new_password_confirmation"
+                                            placeholder="Confirm New Password" required />
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 text-end">
+                                    <button type="submit" class="btn btn-primary">Update Password</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                     <!-- Details End -->
                 </div>
