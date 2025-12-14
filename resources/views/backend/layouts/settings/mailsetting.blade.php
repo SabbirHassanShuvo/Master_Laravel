@@ -5,31 +5,24 @@
         @csrf
 
         @php
-            $envKeys = [
-                'MAIL_MAILER',
-                'MAIL_HOST',
-                'MAIL_PORT',
-                'MAIL_USERNAME',
-                'MAIL_PASSWORD',
-                'MAIL_ENCRYPTION',
-                'MAIL_FROM_ADDRESS',
-            ];
+            $filteredMailSettings = collect($mailSettings)->except(['id', 'created_at', 'updated_at']);
         @endphp
 
-        @foreach ($mailSettings as $key => $value)
+        @foreach ($filteredMailSettings as $key => $value)
             <div class="row mb-4">
-                <label for="{{ $key }}" class="col-md-3 form-label">{{ str_replace('_', ' ', $key) }}</label>
+                <label for="{{ $key }}" class="col-md-3 form-label">
+                    {{ strtoupper(str_replace('_', ' ', $key)) }}
+                </label>
                 <div class="col-md-9">
                     <input class="form-control @error($key) is-invalid @enderror" id="{{ $key }}"
                         name="{{ $key }}" type="text" value="{{ old($key, $value) }}"
-                        placeholder="Enter {{ str_replace('_', ' ', $key) }}">
+                        placeholder="Enter {{ strtoupper(str_replace('_', ' ', $key)) }}">
                     @error($key)
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
             </div>
         @endforeach
-
 
         <div class="row justify-content-end">
             <div class="col-sm-9">

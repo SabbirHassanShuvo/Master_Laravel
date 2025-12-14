@@ -12,6 +12,7 @@ class PasswordResetToken extends Model
     protected $fillable = [
         'email',
         'token',
+        'otp',
         'created_at',
     ];
 }

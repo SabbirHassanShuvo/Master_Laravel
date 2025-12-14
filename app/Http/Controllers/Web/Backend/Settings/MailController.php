@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web\Backend\Settings;
 
+use App\Models\MailSetting;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
@@ -9,16 +10,19 @@ use Illuminate\Support\Facades\Config;
 
 class MailController extends Controller
 {
-    public function edit()
+     public function edit()
     {
+        $mailSetting = MailSetting::first();
+
         $mailSettings = [
-            'mail_mailer'       => config('mail.default'),
-            'mail_host'         => config('mail.mailers.smtp.host'),
-            'mail_port'         => config('mail.mailers.smtp.port'),
-            'mail_username'     => config('mail.mailers.smtp.username'),
-            'mail_password'     => config('mail.mailers.smtp.password'),
-            'mail_encryption'   => config('mail.mailers.smtp.encryption'),
-            'mail_from_address' => config('mail.from.address'),
+            'mail_mailer'       => $mailSetting->mailer ?? '',
+            'mail_host'         => $mailSetting->host ?? '',
+            'mail_port'         => $mailSetting->port ?? '',
+            'mail_username'     => $mailSetting->username ?? '',
+            'mail_password'     => $mailSetting->password ?? '',
+            'mail_encryption'   => $mailSetting->encryption ?? '',
+            'mail_from_address' => $mailSetting->from_address ?? '',
+            'mail_from_name'    => $mailSetting->from_name ?? env('APP_NAME', 'Laravel'),
         ];
 
         return view('backend.layouts.settings.mailsetting', compact('mailSettings'));
@@ -34,32 +38,20 @@ class MailController extends Controller
             'mail_password'     => 'nullable|string',
             'mail_encryption'   => 'nullable|string',
             'mail_from_address' => 'nullable|string',
+            'mail_from_name'    => 'nullable|string',
         ]);
 
-        $replace = [
-            'MAIL_MAILER'       => $data['mail_mailer'] ?? '',
-            'MAIL_HOST'         => $data['mail_host'] ?? '',
-            'MAIL_PORT'         => $data['mail_port'] ?? '',
-            'MAIL_USERNAME'     => $data['mail_username'] ?? '',
-            'MAIL_PASSWORD'     => $data['mail_password'] ?? '',
-            'MAIL_ENCRYPTION'   => $data['mail_encryption'] ?? '',
-            'MAIL_FROM_ADDRESS' => $data['mail_from_address'] ?? '',
-        ];
-
-        $envPath = base_path('.env');
-        $envContent = File::get($envPath);
-
-        foreach ($replace as $key => $value) {
-            $pattern = "/^{$key}=.*/m";
-            $replacement = $key . '=' . $value;
-            if (preg_match($pattern, $envContent)) {
-                $envContent = preg_replace($pattern, $replacement, $envContent);
-            } else {
-                $envContent .= PHP_EOL . $replacement;
-            }
-        }
-
-        File::put($envPath, $envContent);
+        // DB update
+        $mailSetting = MailSetting::first() ?? new MailSetting();
+        $mailSetting->mailer       = $data['mail_mailer'] ?? 'smtp';
+        $mailSetting->host         = $data['mail_host'] ?? 'smtp.mailtrap.io';
+        $mailSetting->port         = $data['mail_port'] ?? 2525;
+        $mailSetting->username     = $data['mail_username'] ?? '';
+        $mailSetting->password     = $data['mail_password'] ?? '';
+        $mailSetting->encryption   = $data['mail_encryption'] ?? 'tls';
+        $mailSetting->from_address = $data['mail_from_address'] ?? 'hello@example.com';
+        $mailSetting->from_name    = $data['mail_from_name'] ?? config('app.name');
+        $mailSetting->save();
 
         return back()->with('success', 'Mail settings updated successfully.');
     }

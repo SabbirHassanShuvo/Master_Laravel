@@ -14,7 +14,8 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'log'),
+    
+    'default' => config('mail.default', 'smtp'),
 
     /*
     |--------------------------------------------------------------------------
@@ -36,67 +37,24 @@ return [
     */
 
     'mailers' => [
-
         'smtp' => [
             'transport' => 'smtp',
-            'scheme' => env('MAIL_SCHEME'),
-            'url' => env('MAIL_URL'),
-            'host' => env('MAIL_HOST', '127.0.0.1'),
-            'port' => env('MAIL_PORT', 2525),
-            'username' => env('MAIL_USERNAME'),
-            'password' => env('MAIL_PASSWORD'),
+            'host' => config('mail.mailers.smtp.host', '127.0.0.1'),
+            'port' => config('mail.mailers.smtp.port', 2525),
+            'encryption' => config('mail.mailers.smtp.encryption', 'tls'),
+            'username' => config('mail.mailers.smtp.username'),
+            'password' => config('mail.mailers.smtp.password'),
             'timeout' => null,
-            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
-        ],
-
-        'ses' => [
-            'transport' => 'ses',
-        ],
-
-        'postmark' => [
-            'transport' => 'postmark',
-            // 'message_stream_id' => env('POSTMARK_MESSAGE_STREAM_ID'),
-            // 'client' => [
-            //     'timeout' => 5,
-            // ],
-        ],
-
-        'resend' => [
-            'transport' => 'resend',
-        ],
-
-        'sendmail' => [
-            'transport' => 'sendmail',
-            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
+            'local_domain' => parse_url(config('app.url'), PHP_URL_HOST),
         ],
 
         'log' => [
             'transport' => 'log',
-            'channel' => env('MAIL_LOG_CHANNEL'),
         ],
 
         'array' => [
             'transport' => 'array',
         ],
-
-        'failover' => [
-            'transport' => 'failover',
-            'mailers' => [
-                'smtp',
-                'log',
-            ],
-            'retry_after' => 60,
-        ],
-
-        'roundrobin' => [
-            'transport' => 'roundrobin',
-            'mailers' => [
-                'ses',
-                'postmark',
-            ],
-            'retry_after' => 60,
-        ],
-
     ],
 
     /*
@@ -111,8 +69,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
+        'address' => config('mail.from.address', 'hello@example.com'),
+        'name' => config('mail.from.name', config('app.name')),
     ],
 
 ];

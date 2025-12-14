@@ -6,6 +6,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -37,19 +38,39 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'question' => 'required|string|max:255',
-            'answer' => 'required|string',
-            'status' => 'required|in:active,inactive',
+        // Validate using Validator facade
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'product_type' => 'required|in:Simple,Classified',
+            'category' => 'required|string|max:255',
+            'brand' => 'required|string|max:255',
+            'unit' => 'required|string|max:255',
+            'tags' => 'nullable|string|max:255',
+            'exchangeable' => 'nullable|boolean',
+            'refundable' => 'nullable|boolean',
         ]);
 
-        $fqa = new Fqa();
-        $fqa->question = $validated['question'];
-        $fqa->answer = $validated['answer'];
-        $fqa->status = $validated['status'];
-        $fqa->save();
+        // Check if validation fails
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
 
-        return redirect()->route('fqaList')->with('success', 'FAQ added successfully!');
+        // Create new product
+        $product = new Product();
+        $product->name = $request->name;
+        $product->type = $request->product_type;
+        $product->category = $request->category;
+        $product->brand = $request->brand;
+        $product->unit = $request->unit;
+        $product->tags = $request->tags ?? null;
+        $product->exchangeable = $request->has('exchangeable') ? true : false;
+        $product->refundable = $request->has('refundable') ? true : false;
+        $product->save();
+
+        // Redirect back with success message
+        return redirect()->back()->with('success', 'Product added successfully!');
     }
 
 }

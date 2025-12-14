@@ -4,7 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Models\User;
 use App\Mail\SendOtpMail;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Traits\ApiResponseTrait;
 use App\Models\PasswordResetToken;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
@@ -13,6 +15,8 @@ use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
+     use ApiResponseTrait;
+     
       // Register
     public function register(Request $request)
     {
@@ -32,11 +36,12 @@ class AuthController extends Controller
 
         $token = JWTAuth::fromUser($user);
 
-        return response()->json([
-            'message' => 'User successfully registered',
-            'user' => $user,
-            'token' => $token
-        ], 201);
+         return $this->authResponse(
+            'User successfully registered',
+            $user,
+            $token,
+            201
+        );
     }
 
     // Login
@@ -53,14 +58,14 @@ class AuthController extends Controller
         ];
 
         if (!$token = JWTAuth::attempt($credentials)) {
-            return response()->json(['error' => 'Invalid credentials'], 401);
+            return $this->errorResponse('Invalid credentials', 401);
         }
 
-        return response()->json([
-            'message' => 'Login successful',
-            'token' => $token,
-            'user' => auth()->user()
-        ]);
+        return $this->authResponse(
+            'Login successful',
+            auth()->user(),
+            $token
+        );
     }
 
     // Forget Password: Send OTP
@@ -72,53 +77,58 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
         if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
+            return $this->errorResponse('User not found', 404);
         }
 
-        $otp = rand(100000, 999999);
+        $otp = rand(100000, 999999); // Generate OTP
+        // No token is generated here
 
-        // First delete old otp if exists
+        // Delete any previous OTP records for this email
         PasswordResetToken::where('email', $request->email)->delete();
 
-        // Insert new OTP (your style)
-        $token = new PasswordResetToken();
-        $token->email = $request->email;
-        $token->token = $otp;
-        $token->created_at = now();
-        $token->save();
+        // Save OTP in database
+        PasswordResetToken::create([
+            'email'      => $request->email,
+            'otp'        => $otp,
+            'created_at' => now(),
+        ]);
 
-        // Send Email
+        // Send OTP via email
         Mail::to($request->email)->send(new SendOtpMail($otp, $request->email));
 
-        return response()->json([
-            'message' => 'OTP has been sent to your email.'
-        ]);
+        return $this->successResponse('OTP sent successfully');
     }
 
-    // verify OTP 
+
+    // Verify OTP and generate reset token
     public function verifyOtp(Request $request)
     {
         $request->validate([
             'email' => 'required|email',
-            'otp'   => 'required'
+            'otp'   => 'required',
         ]);
 
-        $record = PasswordResetToken::where('email', $request->email)->first();
+        // Find record by email and OTP only
+        $record = PasswordResetToken::where('email', $request->email)
+            ->where('otp', $request->otp)
+            ->first();
 
         if (!$record) {
-            return response()->json(['message' => 'OTP not found'], 404);
+            return $this->errorResponse('Invalid OTP', 400);
         }
 
-        if ($record->token != $request->otp) {
-            return response()->json(['message' => 'Invalid OTP'], 400);
-        }
-
-        // Optional: expire check 10 min
+        // Check if OTP is expired (10 minutes)
         if (now()->diffInMinutes($record->created_at) > 10) {
-            return response()->json(['message' => 'OTP expired'], 400);
+            return $this->errorResponse('OTP expired', 400);
         }
 
-        return response()->json(['message' => 'OTP verified']);
+        // Generate reset token after OTP is verified
+        $record->token = Str::random(60);
+        $record->save();
+
+        return $this->successResponse('OTP verified', [
+            'reset_token' => $record->token
+        ]);
     }
 
     // Reset Password
@@ -133,7 +143,7 @@ class AuthController extends Controller
         $record = PasswordResetToken::where('email', $request->email)->first();
 
         if (!$record || $record->token != $request->otp) {
-            return response()->json(['message' => 'Invalid OTP'], 400);
+             return $this->errorResponse('Invalid OTP');
         }
 
         $user = User::where('email', $request->email)->first();
@@ -143,7 +153,7 @@ class AuthController extends Controller
         // delete otp
         PasswordResetToken::where('email', $request->email)->delete();
 
-        return response()->json(['message' => 'Password reset successful']);
+        return $this->successResponse('Password reset successful');
     }
 
 
@@ -151,7 +161,7 @@ class AuthController extends Controller
     public function logout()
     {
         JWTAuth::invalidate(JWTAuth::getToken());
-        return response()->json(['message' => 'Successfully logged out']);
+        return $this->successResponse('Successfully logged out');
     }
 
     // Get Authenticated User
@@ -159,9 +169,9 @@ class AuthController extends Controller
     {
         $user = auth()->user();
         if ($user) {
-            return response()->json($user);
+            return $this->errorResponse('Unauthorized', 401);
         }
-        return response()->json(['message' => 'Unauthorized'], 401);
+        return $this->successResponse('Authenticated user', $user);
     }
 
 }
