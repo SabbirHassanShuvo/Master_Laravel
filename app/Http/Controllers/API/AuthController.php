@@ -80,13 +80,17 @@ class AuthController extends Controller
             return $this->errorResponse('User not found', 404);
         }
 
-        $otp = rand(100000, 999999); // Generate OTP
-        // No token is generated here
+        // Auto delete expired OTPs (older than 10 minutes)
+        PasswordResetToken::where('created_at', '<', now()->subMinutes(10))
+            ->delete();
 
-        // Delete any previous OTP records for this email
+        // Generate 6 digit OTP
+        $otp = rand(100000, 999999);
+
+        // Delete any existing OTP for this email
         PasswordResetToken::where('email', $request->email)->delete();
 
-        // Save OTP in database
+        // Store new OTP
         PasswordResetToken::create([
             'email'      => $request->email,
             'otp'        => $otp,
@@ -94,11 +98,12 @@ class AuthController extends Controller
         ]);
 
         // Send OTP via email
-        Mail::to($request->email)->send(new SendOtpMail($otp, $request->email));
+        Mail::to($request->email)->send(
+            new SendOtpMail($otp, $request->email)
+        );
 
         return $this->successResponse('OTP sent successfully');
     }
-
 
     // Verify OTP and generate reset token
     public function verifyOtp(Request $request)
@@ -108,7 +113,6 @@ class AuthController extends Controller
             'otp'   => 'required',
         ]);
 
-        // Find record by email and OTP only
         $record = PasswordResetToken::where('email', $request->email)
             ->where('otp', $request->otp)
             ->first();
@@ -117,40 +121,67 @@ class AuthController extends Controller
             return $this->errorResponse('Invalid OTP', 400);
         }
 
-        // Check if OTP is expired (10 minutes)
+        // Check OTP expiration
         if (now()->diffInMinutes($record->created_at) > 10) {
+            PasswordResetToken::where('email', $request->email)->delete();
             return $this->errorResponse('OTP expired', 400);
         }
 
-        // Generate reset token after OTP is verified
-        $record->token = Str::random(60);
-        $record->save();
+        $resetToken = Str::random(60);
+
+        PasswordResetToken::where('email', $request->email)
+            ->where('otp', $request->otp)
+            ->update([
+                'token' => $resetToken,
+            ]);
 
         return $this->successResponse('OTP verified', [
-            'reset_token' => $record->token
+            'reset_token' => $resetToken
         ]);
     }
-
     // Reset Password
     public function resetPassword(Request $request)
     {
         $request->validate([
-            'email'            => 'required|email',
-            'otp'              => 'required',
-            'password'         => 'required|min:6|confirmed'
+            'email'    => 'required|email',
+            'otp'      => 'required',
+            'password' => 'required|min:6|confirmed',
         ]);
 
-        $record = PasswordResetToken::where('email', $request->email)->first();
+        // Get reset token from Authorization Bearer
+        $bearerToken = $request->bearerToken();
 
-        if (!$record || $record->token != $request->otp) {
-             return $this->errorResponse('Invalid OTP');
+        if (!$bearerToken) {
+            return $this->errorResponse('Reset token missing', 401);
         }
 
+        // Find reset record by email, otp and bearer token
+        $record = PasswordResetToken::where('email', $request->email)
+            ->where('otp', $request->otp)
+            ->where('token', $bearerToken)
+            ->first();
+
+        if (!$record) {
+            return $this->errorResponse('Invalid OTP or reset token', 400);
+        }
+
+        // Check OTP expiration (10 minutes)
+        if (now()->diffInMinutes($record->created_at) > 10) {
+            PasswordResetToken::where('email', $request->email)->delete();
+            return $this->errorResponse('OTP expired', 400);
+        }
+
+        // Find user
         $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return $this->errorResponse('User not found', 404);
+        }
+
+        // Update password
         $user->password = Hash::make($request->password);
         $user->save();
 
-        // delete otp
+        // Remove reset record after successful password reset
         PasswordResetToken::where('email', $request->email)->delete();
 
         return $this->successResponse('Password reset successful');

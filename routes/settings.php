@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Web\Backend\Settings\MailController;
+use App\Http\Controllers\Web\Backend\Settings\StripeController;
 use App\Http\Controllers\Web\Backend\Settings\ProfileController;
 use App\Http\Controllers\Web\Backend\Settings\WebSettingController;
 use App\Http\Controllers\Web\Backend\Settings\AppSettingsProController;
@@ -24,4 +25,8 @@ Route::prefix('settings')->middleware('auth')->group(function () {
     // app setting routes
     Route::get('app-setting', [AppSettingsProController::class, 'edit'])->name('app-setting.edit');
     Route::post('app-setting', [AppSettingsProController::class, 'update'])->name('app-setting.update');
+
+    // payment gateway routes
+    Route::get('payment-gateway', [StripeController::class, 'edit'])->name('payment-gateway.edit');
+    Route::post('payment-gateway', [StripeController::class, 'update'])->name('payment-gateway.update');
 });

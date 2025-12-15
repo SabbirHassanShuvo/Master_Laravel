@@ -114,6 +114,9 @@
                             <li>
                                 <a href="{{ route('app-setting.edit') }}">App Setting</a>
                             </li>
+                            <li>
+                                <a href="{{ route('payment-gateway.edit') }}">Stripe Setting</a>
+                            </li>
                         </ul>
                     </li>
 
