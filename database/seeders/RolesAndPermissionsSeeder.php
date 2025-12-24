@@ -14,24 +14,37 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create Roles
-        $admin = Role::firstOrCreate(['name' => 'Admin']);
-        $manager = Role::firstOrCreate(['name' => 'Manager']);
-        $user = Role::firstOrCreate(['name' => 'User']);
+        // roles created in RoleSeeder with ids 1,2,3
+        $admin = Role::find(1); // Admin
+        $agent = Role::find(2); // Agent
+        $user  = Role::find(3); // User
 
-        // Create Permissions
-        $permissions = [
-            'create-product', 'edit-product', 'delete-product', 'view-product',
-            'create-user', 'edit-user', 'delete-user', 'view-user'
-        ];
-
-        foreach ($permissions as $perm) {
-            Permission::firstOrCreate(['name' => $perm]);
+        // 1. Admin: all permissions used in the project
+        if ($admin) {
+            $admin->syncPermissions(Permission::all());
         }
 
-        // Assign Permissions to Roles
-        $admin->givePermissionTo(Permission::all()); // Admin gets everything
-        $manager->givePermissionTo(['create-product','edit-product','view-product','view-user']);
-        $user->givePermissionTo(['view-product']);
+        // 2. Agent: can manage products & FAQs, view users, no role/setting management
+        if ($agent) {
+            $agent->syncPermissions([
+                // 'products.view',
+                'products.create',
+                'products.edit',
+                'products.delete',
+
+                'users.view',
+
+                'fqa.view',
+                'fqa.create',
+            ]);
+        }
+
+        // 3. User: read‑only access (can see products and FAQs only)
+        if ($user) {
+            $user->syncPermissions([
+                'products.view',
+                'fqa.view',
+            ]);
+        }
     }
 }
