@@ -11,9 +11,8 @@
                 <i class="status_toggle middle sidebar-toggle" data-feather="align-center"></i>
                 <a href="index-2.html">
                     <img class="user-profile rounded-circle"
-                        src="{{ asset(auth()->user()->photo ? 'uploads/users/' . auth()->user()->photo : 'uploads/users/default.png') }}"
-                        alt="">
-
+                        src="{{ auth()->user()->photo ? asset('uploads/users/' . auth()->user()->photo) : asset('uploads/users/default.png') }}"
+                        alt="User Image">
                 </a>
             </div>
         </div>
@@ -28,7 +27,9 @@
                 </li>
                 <li class="profile-nav onhover-dropdown pe-0 me-0">
                     <div class="media profile-media">
-                        <img class="user-profile rounded-circle" src="assets/images/users/4.jpg" alt="">
+                        <img class="user-profile rounded-circle"
+                            src="{{ auth()->user()->photo ? asset('uploads/users/' . auth()->user()->photo) : asset('uploads/users/default.png') }}"
+                            alt="User Image">
                         <div class="user-name-hide media-body">
                             <span>{{ auth()->user()->name }}</span>
                             <p class="mb-0 font-roboto">Admin<i class="middle ri-arrow-down-s-line"></i></p>
