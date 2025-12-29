@@ -4,7 +4,9 @@
             <div class="logo-wrapper">
                 <a href="index-2.html">
                     <img class="img-fluid main-logo" src="assets/images/logo/1.png" alt="logo">
-                    <img class="img-fluid white-logo" src="assets/images/logo/1-white.png" alt="logo">
+                    <img class="img-fluid main-logo main-dark"
+                        src="{{ $setting->logo ? asset($setting->logo) : asset('assets/images/logo/logo-white.png') }}"
+                        alt="logo">
                 </a>
             </div>
             <div class="toggle-sidebar">
@@ -20,11 +22,11 @@
         <h3>Hello {{ auth()->user()->name }}!</h3>
         <div class="nav-right col-6 pull-right right-header p-0">
             <ul class="nav-menus">
-                <li>
+                {{-- <li>
                     <div class="mode">
                         <i class="ri-moon-line"></i>
                     </div>
-                </li>
+                </li> --}}
                 <li class="profile-nav onhover-dropdown pe-0 me-0">
                     <div class="media profile-media">
                         <img class="user-profile rounded-circle"

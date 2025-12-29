@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
         RoleSeeder::class,
         RolesAndPermissionsSeeder::class,
         UserSeeder::class,
+        MailSettingSeeder::class,
         ]);
     }
 }

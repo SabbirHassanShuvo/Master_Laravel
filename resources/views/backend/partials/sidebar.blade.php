@@ -2,8 +2,12 @@
     <div id="sidebarEffect"></div>
     <div>
         <div class="logo-wrapper logo-wrapper-center">
-            <a href="index-2.html" title="">
-                <img class="img-fluid for-white" src="assets/images/logo/full-white.png" alt="logo">
+            <a href="index-2.html" data-bs-original-title="" title="">
+                <img class="img-fluid for-white"
+                    src="{{ isset($setting->logo) && file_exists(public_path($setting->logo))
+                        ? asset($setting->logo)
+                        : asset('assets/images/logo/logo-white.png') }}"
+                    alt="logo">
             </a>
             <div class="back-btn">
                 <i class="fa fa-angle-left"></i>

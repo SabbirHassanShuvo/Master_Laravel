@@ -10,60 +10,49 @@ use Illuminate\Support\Facades\File;
 
 class WebSettingController extends Controller
 {
-     public function edit()
+
+    public function edit()
     {
-        $setting = WebSetting::first();
+        $setting = WebSetting::firstOrCreate([]);
+
         return view('backend.layouts.settings.webSetting', compact('setting'));
     }
 
 
-public function update(Request $request)
-{
-    $setting = WebSetting::first();
- 
-    $validated = $request->validate([
-        'site_name' => 'nullable|string|max:255',
-        'seo_meta_title' => 'nullable|string|max:255',
-        'seo_meta_description' => 'nullable|string',
-        'contact_email' => 'nullable|email',
-        'social_links' => 'nullable|string',
-        'logo' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp',
-        'favicon' => 'nullable|image|mimes:ico,png'
-    ]);
-     
-    
-    $setting->site_name = $validated['site_name'] ?? $setting->site_name;
-    $setting->seo_meta_title = $validated['seo_meta_title'] ?? $setting->seo_meta_title;
-    $setting->seo_meta_description = $validated['seo_meta_description'] ?? $setting->seo_meta_description;
-    $setting->contact_email = $validated['contact_email'] ?? $setting->contact_email;
-    $setting->social_links = $validated['social_links'] ?? $setting->social_links;
-  
+    public function update(Request $request)
+    {
+        $setting = WebSetting::firstOrCreate([]);
 
+        $validated = $request->validate([
+            'site_name' => 'nullable|string|max:255',
+            'seo_meta_title' => 'nullable|string|max:255',
+            'seo_meta_description' => 'nullable|string',
+            'contact_email' => 'nullable|email',
+            'social_links' => 'nullable|string',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp',
+            'favicon' => 'nullable|image|mimes:ico,png'
+        ]);
 
-    if ($request->hasFile('logo')) {
-        // dd($request->file('logo'));
+        $setting->fill($validated);
+
+        if ($request->hasFile('logo')) {
             $file = $request->file('logo');
-            $filename = time() . '_' . $file->getClientOriginalExtension();
-            $path='uploads/websetting';
-            $file->move($path, $filename);
-            $filepath = $path . '/' . $filename;
-            $setting->logo = $filepath;
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $path = 'uploads/websetting';
+            $file->move(public_path($path), $filename);
+            $setting->logo = $path . '/' . $filename;
         }
 
-
-          if ($request->hasFile('favicon')) {
+        if ($request->hasFile('favicon')) {
             $file = $request->file('favicon');
-            $filename = time() . '_' . $file->getClientOriginalExtension();
-            $path='uploads/websetting';
-            $file->move($path, $filename);
-            $filepath = $path . '/' . $filename;
-            $setting->favicon = $filepath;
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $path = 'uploads/websetting';
+            $file->move(public_path($path), $filename);
+            $setting->favicon = $path . '/' . $filename;
         }
-    
 
-    $setting->save();
+        $setting->save();
 
-    return redirect()->back()->with('success', 'Settings updated successfully.');
-}
-
+        return back()->with('success', 'Settings updated successfully.');
+    }
 }
