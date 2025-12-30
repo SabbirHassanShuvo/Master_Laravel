@@ -4,7 +4,7 @@ use App\Http\Controllers\Web\Backend\Auth\AuthController;
 use App\Http\Controllers\Web\Backend\Auth\PasswordResetController;
 use Illuminate\Support\Facades\Route;
 // Public routes
-Route::get('/', [AuthController::class, 'showLoginForm'])->name('login.form');
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 Route::get('/forgot-password-link', [PasswordResetController::class, 'showForgotPasswordLinkForm'])
@@ -22,6 +22,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         return view('backend.index');
     })->name('dashboard');
+    Route::get('/', [AuthController::class, 'LoginPage'])->name('loginRedriect');
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
