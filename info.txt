@@ -1,0 +1,34 @@
+Admin User Setup:
+
+Login Details:
+Email: admin@gmail.com
+
+Password: 12345678
+
+Seed Database:
+php artisan db:seed
+
+Assign Permissions to Admin Role via Tinker:
+php artisan tinker
+
+Inside Tinker:
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+
+$admin = Role::where('name', 'Admin')->first();
+$admin->syncPermissions(Permission::all());
+$admin->refresh();
+$admin->permissions->pluck('name');
+
+$u = \App\Models\User::find(1);
+$u->assignRole('Admin');
+$u->refresh();
+$u->getAllPermissions()->pluck('name');
+
+Notes:
+
+syncPermissions(Permission::all()) assigns all permissions to Admin.
+
+pluck('name') is used to verify permissions.
+
+Ensure spatie/laravel-permission package is installed and migrated.

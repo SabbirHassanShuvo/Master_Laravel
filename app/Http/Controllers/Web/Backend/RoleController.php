@@ -12,13 +12,13 @@ class RoleController extends Controller
     public function __construct()
     {
         // user must be logged in
-        $this->middleware('auth');
+        // $this->middleware('auth');
 
-        // permission-based protection (uncomment when permissions are seeded)
-        $this->middleware('permission:roles.view')->only(['index']);
-        $this->middleware('permission:roles.create')->only(['create', 'store']);
-        $this->middleware('permission:roles.edit')->only(['edit', 'update']);
-        $this->middleware('permission:roles.delete')->only(['destroy']);
+        // // permission-based protection (uncomment when permissions are seeded)
+        // $this->middleware('permission:roles.view')->only(['index']);
+        // $this->middleware('permission:roles.create')->only(['create', 'store']);
+        // $this->middleware('permission:roles.edit')->only(['edit', 'update']);
+        // $this->middleware('permission:roles.delete')->only(['destroy']);
     }
 
     public function index()

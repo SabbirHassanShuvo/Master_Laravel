@@ -21,7 +21,7 @@ class JWTAuthMiddleware
         }
 
         if (!$token) {
-            return redirect()->route('login')->with('error', 'Token not found. Please login.');
+            return redirect()->route('login.form')->with('error', 'Token not found. Please login.');
         }
 
         try {
@@ -31,7 +31,7 @@ class JWTAuthMiddleware
             // Set the token for this request
             JWTAuth::setToken($token);
         } catch (JWTException $e) {
-            return redirect()->route('login')->with('error', 'Invalid or expired token.');
+            return redirect()->route('login.form')->with('error', 'Invalid or expired token.');
         }
 
         return $next($request);
