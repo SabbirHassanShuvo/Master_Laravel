@@ -2,24 +2,24 @@
     <div class="header-wrapper m-0">
         <div class="header-logo-wrapper p-0">
             <div class="logo-wrapper">
-                <a href="index-2.html">
+                <a href="{{ route('dashboard') }}">
                     <img class="img-fluid main-logo" src="assets/images/logo/1.png" alt="logo">
                     <img class="img-fluid main-logo main-dark"
-                        src="{{ $setting->logo ? asset($setting->logo) : asset('assets/images/logo/logo-white.png') }}"
+                        src="{{ $setting?->logo ? asset($setting->logo) : asset('assets/images/logo/logo1.png') }}"
                         alt="logo">
                 </a>
             </div>
             <div class="toggle-sidebar">
                 <i class="status_toggle middle sidebar-toggle" data-feather="align-center"></i>
-                <a href="index-2.html">
+                <a href="{{ route('dashboard') }}">
                     <img class="user-profile rounded-circle"
-                        src="{{ auth()->user()->photo ? asset('uploads/users/' . auth()->user()->photo) : asset('uploads/users/default.png') }}"
-                        alt="User Image">
+                        src="{{ auth()->user()?->photo ? asset('uploads/users/' . auth()->user()->photo) : asset('uploads/users/default.png') }}"
+                        alt="User">
                 </a>
             </div>
         </div>
 
-        <h3>Hello {{ auth()->user()->name }}!</h3>
+        <h3>Hello {{ auth()->user()?->name ?? 'Guest' }}!</h3>
         <div class="nav-right col-6 pull-right right-header p-0">
             <ul class="nav-menus">
                 {{-- <li>
@@ -30,10 +30,10 @@
                 <li class="profile-nav onhover-dropdown pe-0 me-0">
                     <div class="media profile-media">
                         <img class="user-profile rounded-circle"
-                            src="{{ auth()->user()->photo ? asset('uploads/users/' . auth()->user()->photo) : asset('uploads/users/default.png') }}"
+                            src="{{ auth()->user()?->photo ? asset('uploads/users/' . auth()->user()->photo) : asset('uploads/users/default.png') }}"
                             alt="User Image">
                         <div class="user-name-hide media-body">
-                            <span>{{ auth()->user()->name }}</span>
+                            <span>{{ auth()->user()?->name ?? 'Guest' }}</span>
                             <p class="mb-0 font-roboto">Admin<i class="middle ri-arrow-down-s-line"></i></p>
                         </div>
                     </div>

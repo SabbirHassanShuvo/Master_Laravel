@@ -17,6 +17,7 @@
 
     <title>@yield('title')</title>
     @include('backend.partials.style')
+    @stack('styles')
 
 </head>
 

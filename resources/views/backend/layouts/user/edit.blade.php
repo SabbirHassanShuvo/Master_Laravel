@@ -6,14 +6,16 @@
             <div class="col-sm-8 m-auto">
                 <div class="card">
                     <div class="card-body">
-                        <div class="title-header option-title">
+                        <div class="title-header option-title d-flex align-items-center justify-content-between">
                             <h5>Edit User</h5>
+                            <a href="{{ route('userList') }}" class="btn btn-secondary d-flex align-items-center">
+                                <i data-feather="arrow-left" class="me-1"></i>
+                                Back
+                            </a>
                         </div>
 
                         @if (session('success'))
-                            <div class="alert alert-success">
-                                {{ session('success') }}
-                            </div>
+                            <div class="alert alert-success">{{ session('success') }}</div>
                         @endif
 
                         @if ($errors->any())
@@ -26,61 +28,99 @@
                             </div>
                         @endif
 
-                        <form class="theme-form theme-form-2 mega-form" action="{{ route('user.update', $user->id) }}"
-                            method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('user.update', $user->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
-                            <div class="card-header-1">
-                                <h5>User Information</h5>
+                            <div class="row">
+                                {{-- Name --}}
+                                <div class="col-md-6 mb-3">
+                                    <label>First Name</label>
+                                    <input type="text" name="name" class="form-control"
+                                        value="{{ old('name', $user->name) }}">
+                                </div>
+
+                                {{-- Phone --}}
+                                <div class="col-md-6 mb-3">
+                                    <label>Phone</label>
+                                    <input type="text" name="phone" class="form-control"
+                                        value="{{ old('phone', $user->phone) }}">
+                                </div>
                             </div>
 
                             <div class="row">
-                                <div class="mb-4 row align-items-center">
-                                    <label class="form-label-title col-lg-2 col-md-3 mb-0">First Name</label>
-                                    <div class="col-md-9 col-lg-10">
-                                        <input class="form-control" type="text" name="name"
-                                            value="{{ old('name', $user->name) }}">
-                                    </div>
+                                {{-- Email --}}
+                                <div class="col-md-6 mb-3">
+                                    <label>Email Address</label>
+                                    <input type="email" name="email" class="form-control"
+                                        value="{{ old('email', $user->email) }}" required>
                                 </div>
 
-                                <div class="mb-4 row align-items-center">
-                                    <label class="col-lg-2 col-md-3 col-form-label form-label-title">Email Address</label>
-                                    <div class="col-md-9 col-lg-10">
-                                        <input class="form-control" type="email" name="email"
-                                            value="{{ old('email', $user->email) }}" required>
-                                    </div>
+                                {{-- Role --}}
+                                <div class="col-md-6 mb-3">
+                                    <label>Role</label>
+                                    <select name="role" class="form-control" id="roleSelect">
+                                        <option value="">Select Role</option>
+                                        @foreach ($roles as $role)
+                                            <option value="{{ $role->id }}"
+                                                {{ old('role', $userRole ? $userRole->id : '') == $role->id ? 'selected' : '' }}>
+                                                {{ $role->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <small class="form-text text-muted">Select a role to assign access permissions to this
+                                        user.</small>
                                 </div>
+                            </div>
 
-                                <div class="mb-4 row align-items-center mt-4">
-                                    <label class="col-lg-2 col-md-3 col-form-label form-label-title">Phone</label>
-                                    <div class="col-md-9 col-lg-10">
-                                        <input class="form-control" type="text" name="phone"
-                                            value="{{ old('phone', $user->phone) }}">
-                                    </div>
-                                </div>
-
-                                <div class="mb-4 row align-items-center">
-                                    <label class="col-lg-2 col-md-3 col-form-label form-label-title">Photo</label>
-                                    <div class="col-md-9 col-lg-10">
-                                        <input class="form-control" type="file" name="photo" id="photoInput">
-                                        <div class="mt-3" id="photoPreview">
-                                            <img src="{{ asset($user->photo ? 'uploads/users/' . $user->photo : 'uploads/users/default.png') }}"
-                                                alt="Photo Preview" class="img-thumbnail rounded shadow-sm"
-                                                style="max-width: 150px; max-height: 150px; object-fit: cover; border: 1px solid #e9ecef;">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-9 offset-md-2">
-                                        <button type="submit" class="btn btn-primary">Update User</button>
+                            <div class="row">
+                                {{-- Photo --}}
+                                <div class="col-md-6 mb-3">
+                                    <label>Photo</label>
+                                    <input type="file" name="photo" class="form-control" id="photoInput">
+                                    <div class="mt-2">
+                                        @php
+                                            $imageSrc = 'uploads/users/default.png';
+                                            if ($user->photo) {
+                                                // Check if path already includes 'uploads/users/' or is just filename
+                                                if (strpos($user->photo, 'uploads/users/') === 0) {
+                                                    $imageSrc = $user->photo;
+                                                } else {
+                                                    $imageSrc = 'uploads/users/' . $user->photo;
+                                                }
+                                            }
+                                        @endphp
+                                        <img id="photoPreview" src="{{ asset($imageSrc) }}" alt="Photo Preview"
+                                            class="img-thumbnail"
+                                            style="max-width: 150px; max-height: 150px; object-fit: cover; display: block;">
                                     </div>
                                 </div>
                             </div>
+
+                            <button type="submit" class="btn btn-primary">Update User</button>
                         </form>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
 @endsection
+
+@push('styles')
+    {{-- FontAwesome --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+@endpush
+
+@push('scripts')
+    {{-- Scripts --}}
+    <script>
+        // Image preview
+        document.getElementById('photoInput').addEventListener('change', function(event) {
+            const [file] = this.files;
+            if (file) {
+                const preview = document.getElementById('photoPreview');
+                preview.src = URL.createObjectURL(file);
+            }
+        });
+    </script>
+@endpush

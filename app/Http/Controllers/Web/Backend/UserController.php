@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
 use App\Helpers\Helper;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -18,22 +19,40 @@ class UserController extends Controller
 
     public function getUsers(Request $request)
     {
-        $users = User::query();
+        $users = User::with('roles')->select('users.*');
+        $start = (int) $request->input('start', 0);
 
         return DataTables::of($users)
+            ->addColumn('sl_no', function($row) use ($request) {
+                static $counter = 0;
+                $start = (int) $request->input('start', 0);
+                $counter++;
+                return $start + $counter;
+            })
+            ->addColumn('role', function($row) {
+                $role = $row->roles->first();
+                return $role ? $role->name : '<span class="text-muted">-</span>';
+            })
             ->addColumn('action', function($row){
                 $editUrl = route('user.edit', $row->id);
                 $deleteUrl = route('user.delete', $row->id);
-                return '<a href="'.$editUrl.'" class="btn btn-sm btn-primary" style="width:70px;">Edit</a> 
-                        <button data-url="'.$deleteUrl.'" class="btn btn-sm btn-danger btn-delete" style="width:70px;">Delete</button>';
+                return '<div class="btn-group btn-group-sm" role="group">
+                            <a href="'.$editUrl.'" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Edit User">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <button data-url="'.$deleteUrl.'" class="btn btn-outline-danger btn-delete" data-bs-toggle="tooltip" title="Delete User">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>';
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action', 'role'])
             ->make(true);
     }
 
     public function createUser()
     {
-        return view('backend.layouts.user.form');
+        $roles = Role::all();
+        return view('backend.layouts.user.form', compact('roles'));
     }
 
     public function storeUser(Request $request)
@@ -45,6 +64,7 @@ class UserController extends Controller
             'password' => 'required|string|min:6|confirmed',
             'phone' => 'nullable|string|max:20',
             'photo' => 'nullable|image|max:2048',
+            'role' => 'nullable|exists:roles,id',
         ]);
 
         // User create
@@ -59,6 +79,14 @@ class UserController extends Controller
 
         $user->save();
 
+        // Assign role if provided
+        if ($request->filled('role')) {
+            $role = Role::find($request->role);
+            if ($role) {
+                $user->assignRole($role);
+            }
+        }
+
         return redirect()->route('createUser')->with('success', 'User created successfully!');
     }
 
@@ -66,7 +94,9 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::findOrFail($id);
-        return view('backend.layouts.user.edit', compact('user'));
+        $roles = Role::all();
+        $userRole = $user->roles->first(); // Get first role (assuming user has one role)
+        return view('backend.layouts.user.edit', compact('user', 'roles', 'userRole'));
     }
 
     public function update(Request $request, $id)
@@ -79,6 +109,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:20',
             'photo' => 'nullable|image|max:2048',
+            'role' => 'nullable|exists:roles,id',
         ]);
 
         $user->name = $validated['name'] ?? $user->name;
@@ -94,6 +125,18 @@ class UserController extends Controller
         }
 
         $user->save();
+
+        // Update role if provided
+        if ($request->filled('role')) {
+            $role = Role::find($request->role);
+            if ($role) {
+                // Remove all existing roles and assign new one
+                $user->syncRoles([$role]);
+            }
+        } else {
+            // If no role selected, remove all roles
+            $user->syncRoles([]);
+        }
 
         return redirect()->route('user.edit', $user->id)
                         ->with('success', 'User updated successfully!');

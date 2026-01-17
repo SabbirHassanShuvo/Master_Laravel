@@ -15,9 +15,11 @@
                     <table class="table theme-table" id="users-table">
                         <thead>
                             <tr>
+                                <th>SL No</th>
                                 <th>Name</th>
                                 <th>Phone</th>
                                 <th>Email</th>
+                                <th>Role</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -28,9 +30,24 @@
     </div>
 @endsection
 
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <style>
+        #users-table th:nth-child(1),
+        #users-table td:nth-child(1) {
+            text-align: center;
+        }
+
+        #users-table th:last-child,
+        #users-table td:last-child {
+            text-align: center;
+        }
+    </style>
+@endpush
+
 @push('scripts')
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
     <script>
@@ -40,6 +57,13 @@
                 serverSide: true,
                 ajax: '{{ route('getUsers.data') }}',
                 columns: [{
+                        data: 'sl_no',
+                        name: 'sl_no',
+                        orderable: false,
+                        searchable: false,
+                        className: 'text-center'
+                    },
+                    {
                         data: 'name',
                         name: 'name'
                     },
@@ -52,10 +76,17 @@
                         name: 'email'
                     },
                     {
+                        data: 'role',
+                        name: 'role',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
                         data: 'action',
                         name: 'action',
                         orderable: false,
-                        searchable: false
+                        searchable: false,
+                        className: 'text-center'
                     }
                 ]
             });
