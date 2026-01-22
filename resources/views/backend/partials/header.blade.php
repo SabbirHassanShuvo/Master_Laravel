@@ -13,7 +13,7 @@
                 <i class="status_toggle middle sidebar-toggle" data-feather="align-center"></i>
                 <a href="{{ route('dashboard') }}">
                     <img class="user-profile rounded-circle"
-                        src="{{ auth()->user()?->photo ? asset('uploads/users/' . auth()->user()->photo) : asset('uploads/users/default.png') }}"
+                        src="{{ auth()->user()?->photo ? asset('uploads/users/' . auth()->user()->photo) : asset('defult.jpg') }}"
                         alt="User">
                 </a>
             </div>
@@ -30,7 +30,7 @@
                 <li class="profile-nav onhover-dropdown pe-0 me-0">
                     <div class="media profile-media">
                         <img class="user-profile rounded-circle"
-                            src="{{ auth()->user()?->photo ? asset('uploads/users/' . auth()->user()->photo) : asset('uploads/users/default.png') }}"
+                            src="{{ auth()->user()?->photo ? asset('uploads/users/' . auth()->user()->photo) : asset('defult.jpg') }}"
                             alt="User Image">
                         <div class="user-name-hide media-body">
                             <span>{{ auth()->user()?->name ?? 'Guest' }}</span>
